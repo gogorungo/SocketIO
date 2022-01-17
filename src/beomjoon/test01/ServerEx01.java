@@ -8,7 +8,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class ServerEx01 {
-
 	public static void main(String[] args) {
 		// 서버에서 클라이언트 요청 대기
 		byte[] by = new byte[65535];
@@ -33,5 +32,4 @@ public class ServerEx01 {
 			e.printStackTrace();
 		}
 	}
-
 }
