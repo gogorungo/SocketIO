@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class ServerEx03 extends Thread {
@@ -21,6 +23,10 @@ public class ServerEx03 extends Thread {
 		this.br = br;
 	}
 
+	// main 쓰레드에서는 접속자를 기다리는 역할을 한다.
+	// 접속자가 접속되면 접속자의 출력정보를 map에 저장하고 
+	// 접속자의 쓰래드를 실행 시킨다.
+	// 쓰래드는 클라이언트가 보낸 데이터를 출력하는 역할을 한다.
 	public static void main(String[] args) {
 		ServerSocket serverSocket = null;
 		Socket socket = null;
@@ -54,7 +60,31 @@ public class ServerEx03 extends Thread {
 	
 	@Override
 	public void run() {
-		
+		while(true) {
+			String line = null;
+			try {
+				line = br.readLine();
+				Enumeration<String> keys = map.keys(); // userId가 key
+				while(keys.hasMoreElements()) {
+					String key = keys.nextElement();
+					PrintWriter pw = map.get(key);
+					pw.println(userId + " : " + line);
+					pw.flush();
+				}
+			} catch (SocketException e) {
+				try {
+					if(br != null) br.close();
+					System.out.println("클라이언트 연결이 끊어졌습니다.");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				break;
+			} 
+			catch (IOException e) {
+				System.out.println("클라이언트 연결이 끊어졌습니다.");
+				break;
+			}
+		}
 	}
 
 }
