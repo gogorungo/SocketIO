@@ -1,9 +1,60 @@
 package beomjoon.test03;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
 public class ClientEx03 {
+	static Scanner scan = new Scanner(System.in);
+	BufferedReader br;  // <- PrintWriter를 이용해서 서버에서 보낸 데이터 읽기
+	public ClientEx03(BufferedReader br) {
+		this.br = br;
+	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		try {
+			Socket socket = new Socket(InetAddress.getLocalHost(), 9999);
+			// 읽고 쓰는 객체 준비
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+			// 클라이언트 소켓을 실행 할때 userId를 args에 함께 입력 받도록 한다.
+			System.out.println("args.length => " + args.length);
+			System.out.println("args[0] => " + args[0]);
+			if(args.length == 0) {
+				System.out.println("사용자 아이디가 없습니다.");
+				System.out.println("ex) java -cp . beomjoon.test03.ClientEx03 userId");
+				pw.println("no-user");
+				pw.flush();
+				if(socket != null) socket.close();
+				return;
+			}
+			String userId = args[0];
+			pw.println(userId);
+			pw.flush();
+			
+			// 클라이언트 생성 및 br객체 초기화
+			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			new ClientEx03(br);
+			
+			// 클라이언트 생성 성공이면 메세지 입력 대기 상태
+			while(true) {
+				System.out.print("입력: ");
+				String line = scan.nextLine();
+				pw.println(line);
+				pw.flush();
+			}
+		} catch (UnknownHostException e) {
+			System.out.println("서버를 찾지 못했다!");
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
