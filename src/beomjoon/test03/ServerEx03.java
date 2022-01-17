@@ -60,11 +60,11 @@ public class ServerEx03 extends Thread {
 					if (pw != null)pw.close();
 					System.out.println(userId + " 클라이언트 연결이 끊어졌습니다.");
 				} catch (IOException e1) {
-					System.out.println("클라이언트 연결 해제 오류!");
+					System.out.println(userId + " 클라이언트 연결 해제!");
 				}
 			} catch (IOException e) {
 				//e.printStackTrace();
-				System.out.println("데이터 입출력 오류");
+				System.out.println(userId + " 데이터 입출력 오류");
 			}
 		} /// end of while ...
 
@@ -87,13 +87,13 @@ public class ServerEx03 extends Thread {
 				try {
 					if (br != null)
 						br.close();
-					System.out.println("클라이언트 연결이 끊어졌습니다.");
+					System.out.println(userId + "클라이언트 연결이 끊어졌습니다.");
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 				break;
 			} catch (IOException e) {
-				System.out.println("클라이언트 연결이 끊어졌습니다.");
+				System.out.println(userId + "클라이언트 연결이 끊어졌습니다.");
 				break;
 			}
 		}

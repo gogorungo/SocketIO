@@ -7,10 +7,11 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class ClientEx03 {
+public class ClientEx03 extends Thread {
 	static Scanner scan = new Scanner(System.in);
 	BufferedReader br;  // <- PrintWriter를 이용해서 서버에서 보낸 데이터 읽기
 	public ClientEx03(BufferedReader br) {
@@ -39,11 +40,11 @@ public class ClientEx03 {
 			
 			// 클라이언트 생성 및 br객체 초기화
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			new ClientEx03(br);
+			new ClientEx03(br).start(); // 클라이언트 생성 후 쓰레드 실행.
 			
 			// 클라이언트 생성 성공이면 메세지 입력 대기 상태
 			while(true) {
-				System.out.print("입력: ");
+				//System.out.print("입력: ");
 				String line = scan.nextLine();
 				pw.println(line);
 				pw.flush();
@@ -56,6 +57,26 @@ public class ClientEx03 {
 			e.printStackTrace();
 		}
 
+	} // main의 끝
+	
+	@Override
+	public void run() {
+		// 서버에서 보내지는 메시지 대기
+		while(true) {
+			try {
+				String line = br.readLine();
+				System.out.println(line);
+				Thread.sleep(100);
+			} catch (SocketException e) {
+				System.out.println("서버와 연결이 끊어졌다.");
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println("서버와 데이터 통신 오류!");
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
